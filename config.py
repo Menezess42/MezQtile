@@ -1,0 +1,305 @@
+import subprocess
+from libqtile import bar, layout, qtile,hook
+from libqtile.config import Click, Drag, Group, Key, Match, Screen
+from libqtile.lazy import lazy
+from libqtile.utils import guess_terminal
+from qtile_extras import widget
+from qtile_extras.widget.decorations import PowerLineDecoration,RectDecoration
+import datetime
+import os
+from colors import Colors
+
+tmnt = Colors()
+
+me_colors=tmnt.get_meZemacs_colors()
+tmnt_colors_pastel = tmnt.get_tmnt_cores_pasteis()
+tmnt_colors = tmnt.get_tmnt_cores()
+tmnt_neon = tmnt.get_tmnt_neon()
+tmnt_neon_pastel = tmnt.get_tmnt_neon_pastel()
+tmnt_more_neon_pastel = tmnt.get_tmnt_neon_pastel_spreded()
+
+mod = "mod4"
+terminal = guess_terminal()
+
+keys = [
+    Key([mod], "h", lazy.layout.left(), desc="Move focus to left"),
+    Key([mod], "l", lazy.layout.right(), desc="Move focus to right"),
+    Key([mod], "j", lazy.layout.down(), desc="Move focus down"),
+    Key([mod], "k", lazy.layout.up(), desc="Move focus up"),
+    Key([mod], "f", lazy.layout.next(), desc="Move window focus to other window"),
+    Key([mod, "shift"], "h", lazy.layout.shuffle_left(), desc="Move window to the left"),
+    Key([mod, "shift"], "l", lazy.layout.shuffle_right(), desc="Move window to the right"),
+    Key([mod, "shift"], "j", lazy.layout.shuffle_down(), desc="Move window down"),
+    Key([mod, "shift"], "k", lazy.layout.shuffle_up(), desc="Move window up"),
+    Key([mod, "control"], "h", lazy.layout.grow_left(), desc="Grow window to the left"),
+    Key([mod, "control"], "l", lazy.layout.grow_right(), desc="Grow window to the right"),
+    Key([mod, "control"], "j", lazy.layout.grow_down(), desc="Grow window down"),
+    Key([mod, "control"], "k", lazy.layout.grow_up(), desc="Grow window up"),
+    Key([mod], "n", lazy.layout.normalize(), desc="Reset all window sizes"),
+    Key(
+        [mod, "shift"],
+        "Return",
+        lazy.layout.toggle_split(),
+        desc="Toggle between split and unsplit sides of stack",
+    ),
+    Key([mod], "Return", lazy.spawn(terminal), desc="Launch terminal"),
+    Key([mod], "Tab", lazy.next_layout(), desc="Toggle between layouts"),
+    Key([mod], "w", lazy.window.kill(), desc="Kill focused window"),
+    Key([mod, "control"], "r", lazy.reload_config(), desc="Reload the config"),
+    Key([mod, "control"], "q", lazy.shutdown(), desc="Shutdown Qtile"),
+    Key([mod], "space", lazy.spawncmd(), desc="Spawn a command using a prompt widget"),
+    Key([mod],'s',lazy.next_screen(), desc='Next monitor'),
+    Key([mod],"e",lazy.spawn("emacs"),desc="Launch MezEmacs"),
+    Key([mod],"b",lazy.spawn("firefox"),desc="Launch Firefox"),
+]
+
+
+groups = [Group(i) for i in "123456789"]
+
+for i in groups:
+    keys.extend(
+        [
+            Key(
+                [mod],
+                i.name,
+                lazy.group[i.name].toscreen(),
+                desc="Switch to group {}".format(i.name),
+            ),
+            Key(
+                [mod, "shift"],
+                i.name,
+                lazy.window.togroup(i.name, switch_group=True),
+                desc="Switch to & move focused window to group {}".format(i.name),
+            ),
+        ]
+    )
+
+
+layouts = [
+    layout.RatioTile(border_width=3,
+                    border_focus=tmnt_neon['neon_pink'],
+                     border_normal=tmnt_neon['neon_purple'],
+                     margin=7),
+    layout.Max(),
+    layout.floating.Floating(),
+    layout.MonadTall(border_width=3,
+                     border_focus=tmnt_neon['neon_pink'],
+                     border_normal=tmnt_neon['neon_purple'],
+                     margin=10),
+    layout.Columns(),
+]
+widget_defaults = dict(
+    font="Hack Nerd Font Regular",
+    fontsize=18,
+    padding=3,
+    reconfigure_screens=True
+)
+extension_defaults = widget_defaults.copy()
+day_number = (int(datetime.datetime.now().strftime("%w")) + 1)  # Obtém o número do dia atual (1 para domingo, 2 para segunda-feira, etc.)
+format_string = "%Y/%m/%d " + str(day_number) + " %H:%M"
+
+deco_rec ={
+    "decorations": [
+        RectDecoration(
+            radius=7,
+            filled=True,
+            padding_y=2,
+            group=True,
+            use_widget_background=True,
+        )
+    ],
+}
+deco_rec_clip={
+    "decorations": [
+        RectDecoration(
+            radius=7,
+            filled=True,
+            padding_y=2,
+            use_widget_background=True,
+            clip=True,
+            group=True
+        )
+    ],
+    
+}
+
+screens = [
+    Screen(
+        top=bar.Bar(
+            [
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_april_onil.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['April ONeil'],),
+                widget.Clock(background=tmnt_colors_pastel['April ONeil'],
+                             foreground=tmnt_neon['neon_navy'],
+                             **deco_rec_clip,
+                             format=format_string),
+                widget.Sep(linewidth=0),
+                widget.WidgetBox(text_open='🐢',
+                                 text_closed='🥚',
+                                 widgets=[
+                                     widget.Systray(
+                                         background=tmnt_colors_pastel['Tmnt Verde Médio'],
+                                         padding=2,
+                                         **deco_rec_clip,
+                                     ),
+                                     widget.Sep(linewidth=0),
+                                widget.PulseVolume(
+                                    limit_max_volume=True,
+                                    volume_app='pavucontrol',
+                                    fmt='🔊{}',
+                                    background=tmnt_more_neon_pastel['pastel_green_3'],
+                                    **deco_rec_clip,
+                                    foreground=tmnt_neon['neon_navy'],
+                                ),
+                                 ]
+                                 ),
+                widget.Prompt(background=tmnt_colors_pastel['Tmnt Verde Médio'],
+                              foreground=tmnt_neon['neon_navy'],
+                              **deco_rec_clip),
+                widget.Spacer(length=570),
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_spliter.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['Krang'],),
+                widget.GroupBox(highlight_method='block',
+                                **deco_rec_clip,
+                                padding=0,
+                                background=tmnt_colors_pastel['Krang'],
+                                foreground=tmnt_neon['neon_navy']
+                                ),
+                widget.CurrentLayoutIcon(scale=0.7, **deco_rec_clip,
+                                         background=tmnt_colors_pastel['Krang'],
+                                         # foreground=me_colors['blackish'],
+                                         custom_icon_paths=['/home/m42/.config/qtile/layout-icons/gruvbox-dark2'],
+                                         ),
+                widget.WindowName(foreground=tmnt_neon['neon_navy'],
+                                  max_chars=1),
+                widget.Sep(linewidth=0),
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_rapha.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['Raphael'],),
+                widget.NvidiaSensors(
+                    foreground=tmnt_neon['neon_navy'],
+                    background=tmnt_colors_pastel['Raphael'],
+                    **deco_rec_clip,
+                    format='GPU:{temp}°C',
+                ),
+                widget.Sep(linewidth=0),
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_mich.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['Michelangelo'],),
+                widget.ThermalSensor(tag_sensor='Package id 0',
+                                     format='CPU:{temp:.1f}{unit}',
+                                     **deco_rec_clip,
+                                     foreground=tmnt_neon['neon_navy'],
+                                     background=tmnt_colors_pastel['Michelangelo']
+                                     ),
+                widget.Sep(linewidth=0),
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_doni.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['Donatello'],),
+                widget.CPU(format='{load_percent}%|{freq_current}GHz',
+                           background=tmnt_colors_pastel['Donatello'],
+                              foreground=tmnt_neon['neon_navy'],
+                              **deco_rec_clip),
+                widget.Sep(linewidth=0),
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_leo.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['Leonardo'],),
+                widget.Memory(measure_mem='G',
+                              format='{MemUsed:.0f}G|{MemTotal:.0f}G',
+                              background=tmnt_colors_pastel['Leonardo'],
+                              foreground=tmnt_neon['neon_navy'],
+                              **deco_rec_clip),
+            ],
+            25,
+            background=tmnt_neon['neon_navy']+"00",
+            margin=[5,10,0,10],
+        ),
+        wallpaper="~/Downloads/tmnt_neon.jpg"
+    ),
+    Screen(
+        top=bar.Bar(
+            [
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_april_onil.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['April ONeil'],),
+                widget.Clock(background=tmnt_colors_pastel['April ONeil'],
+                             foreground=tmnt_neon['neon_navy'],
+                             **deco_rec_clip,
+                             format=format_string),
+                widget.Spacer(length=600),
+                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_spliter.png',
+                             **deco_rec_clip,
+                             background=tmnt_colors_pastel['Krang'],),
+                widget.GroupBox(highlight_method='block',
+                                **deco_rec_clip,
+                                padding=0,
+                                background=tmnt_colors_pastel['Krang'],
+                                foreground=tmnt_neon['neon_navy']
+                                ),
+                widget.CurrentLayoutIcon(scale=0.7, **deco_rec_clip,
+                                         background=tmnt_colors_pastel['Krang'],
+                                         # foreground=me_colors['blackish'],
+                                         custom_icon_paths=['/home/m42/.config/qtile/layout-icons/gruvbox-dark2'],
+                                         ),
+                widget.WindowName(foreground=tmnt_neon['neon_navy'],
+                                  max_chars=1),
+            ],
+            25,
+            background=tmnt_neon['neon_navy']+"00",
+            margin=[5,10,0,10],
+        ),
+        wallpaper="~/Downloads/tmnt_neon.jpg"
+    )
+]
+
+mouse = [
+    Drag([mod], "Button1", lazy.window.set_position_floating(), start=lazy.window.get_position()),
+    Drag([mod], "Button3", lazy.window.set_size_floating(), start=lazy.window.get_size()),
+    Click([mod], "Button2", lazy.window.bring_to_front()),
+]
+
+dgroups_key_binder = None
+dgroups_app_rules = []  # type: list
+follow_mouse_focus = True
+bring_front_click = True
+cursor_warp = True
+floating_layout = layout.Floating(
+    float_rules=[
+        *layout.Floating.default_float_rules,
+        Match(wm_class="confirmreset"),  # gitk
+        Match(wm_class="makebranch"),  # gitk
+        Match(wm_class="maketag"),  # gitk
+        Match(wm_class="ssh-askpass"),  # ssh-askpass
+        Match(title="branchdialog"),  # gitk
+        Match(title="pinentry"),  # GPG key password entry
+        Match(wm_class="Pavucontrol")
+    ]
+)
+auto_fullscreen = True
+focus_on_window_activation = "smart"
+reconfigure_screens = True
+
+auto_minimize = True
+wl_input_rules = None
+wmname = "LG3D"
+
+@hook.subscribe.startup_once
+def autostart():
+    subprocess.Popen(["optimus-manager-qt"])
+    arandr_top_bottom = os.path.expanduser('~/.config/qtile/scripts/arandr_topBoton_script.sh')
+    arandr_left_right = os.path.expanduser('~/.config/qtile/scripts/arandr_leftRight_script.sh')
+    subprocess.Popen([arandr_left_right])
+    autostart = os.path.expanduser('~/.config/qtile/scripts/autostart.sh')
+    subprocess.Popen([autostart])
+
+
+qtile.cmd_spawn('setxkbmap -layout br')
+
+
+
+
+
+
+
