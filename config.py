@@ -127,7 +127,7 @@ screens = [
     Screen(
         top=bar.Bar(
             [
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_april_onil.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_april_onil.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['April ONeil'],),
                 widget.Clock(background=tmnt_colors_pastel['April ONeil'],
@@ -158,7 +158,7 @@ screens = [
                               foreground=tmnt_neon['neon_navy'],
                               **deco_rec_clip),
                 widget.Spacer(length=570),
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_spliter.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_spliter.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['Krang'],),
                 widget.GroupBox(highlight_method='block',
@@ -170,12 +170,12 @@ screens = [
                 widget.CurrentLayoutIcon(scale=0.7, **deco_rec_clip,
                                          background=tmnt_colors_pastel['Krang'],
                                          # foreground=me_colors['blackish'],
-                                         custom_icon_paths=['/home/m42/.config/qtile/layout-icons/gruvbox-dark2'],
+                                         custom_icon_paths=['./layout-icons/gruvbox-dark2'],
                                          ),
                 widget.WindowName(foreground=tmnt_neon['neon_navy'],
                                   max_chars=1),
                 widget.Sep(linewidth=0),
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_rapha.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_rapha.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['Raphael'],),
                 widget.NvidiaSensors(
@@ -185,7 +185,7 @@ screens = [
                     format='GPU:{temp}°C',
                 ),
                 widget.Sep(linewidth=0),
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_mich.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_mich.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['Michelangelo'],),
                 widget.ThermalSensor(tag_sensor='Package id 0',
@@ -195,7 +195,7 @@ screens = [
                                      background=tmnt_colors_pastel['Michelangelo']
                                      ),
                 widget.Sep(linewidth=0),
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_doni.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_doni.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['Donatello'],),
                 widget.CPU(format='{load_percent}%|{freq_current}GHz',
@@ -203,7 +203,7 @@ screens = [
                               foreground=tmnt_neon['neon_navy'],
                               **deco_rec_clip),
                 widget.Sep(linewidth=0),
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_leo.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_leo.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['Leonardo'],),
                 widget.Memory(measure_mem='G',
@@ -216,12 +216,12 @@ screens = [
             background=tmnt_neon['neon_navy']+"00",
             margin=[5,10,0,10],
         ),
-        wallpaper="~/Downloads/tmnt_neon.jpg"
+        wallpaper="~./assets/tmnt_neon.jpg"
     ),
     Screen(
         top=bar.Bar(
             [
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_april_onil.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_april_onil.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['April ONeil'],),
                 widget.Clock(background=tmnt_colors_pastel['April ONeil'],
@@ -229,7 +229,7 @@ screens = [
                              **deco_rec_clip,
                              format=format_string),
                 widget.Spacer(length=600),
-                widget.Image(filename='/home/m42/Downloads/tmnt/tmnt_faces/my_spliter.png',
+                widget.Image(filename='./assets/tmnt/tmnt_faces/my_spliter.png',
                              **deco_rec_clip,
                              background=tmnt_colors_pastel['Krang'],),
                 widget.GroupBox(highlight_method='block',
@@ -241,7 +241,7 @@ screens = [
                 widget.CurrentLayoutIcon(scale=0.7, **deco_rec_clip,
                                          background=tmnt_colors_pastel['Krang'],
                                          # foreground=me_colors['blackish'],
-                                         custom_icon_paths=['/home/m42/.config/qtile/layout-icons/gruvbox-dark2'],
+                                         custom_icon_paths=['./layout-icons/gruvbox-dark2'],
                                          ),
                 widget.WindowName(foreground=tmnt_neon['neon_navy'],
                                   max_chars=1),
@@ -250,7 +250,7 @@ screens = [
             background=tmnt_neon['neon_navy']+"00",
             margin=[5,10,0,10],
         ),
-        wallpaper="~/Downloads/tmnt_neon.jpg"
+        wallpaper="./assets/tmnt_neon.jpg"
     )
 ]
 
@@ -284,7 +284,7 @@ reconfigure_screens = True
 auto_minimize = True
 wl_input_rules = None
 wmname = "LG3D"
-
+'''
 @hook.subscribe.startup_once
 def autostart():
     subprocess.Popen(["optimus-manager-qt"])
@@ -293,9 +293,9 @@ def autostart():
     subprocess.Popen([arandr_left_right])
     autostart = os.path.expanduser('~/.config/qtile/scripts/autostart.sh')
     subprocess.Popen([autostart])
+'''
 
-
-qtile.cmd_spawn('setxkbmap -layout br')
+#qtile.cmd_spawn('setxkbmap -layout br')
 
 
 
