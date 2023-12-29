@@ -9,17 +9,6 @@ import datetime
 import os
 from colors import Colors
 
-
-
-
-@hook.subscribe.startup_once
-def autostart():
-    #subprocess.Popen(["optimus-manager-qt"])
-    arandr_top_bottom = os.path.expanduser('~/.config/qtile/scripts/arandr_topBoton_script.sh')
-    arandr_left_right_nof = os.path.expanduser('~/.config/qtile/scripts/arandr_leftRight_script_offload.sh')
-    subprocess.Popen([arandr_top_bottom])
-    autostart = os.path.expanduser('~/.config/qtile/scripts/autostart.sh')
-    subprocess.Popen([autostart])
 tmnt = Colors()
 
 me_colors=tmnt.get_meZemacs_colors()
@@ -296,6 +285,15 @@ reconfigure_screens = True
 auto_minimize = True
 wl_input_rules = None
 wmname = "LG3D"
+
+@hook.subscribe.startup_once
+def autostart():
+    #subprocess.Popen(["optimus-manager-qt"])
+    arandr_top_bottom = os.path.expanduser('~/.config/qtile/scripts/arandr_topBoton_script.sh')
+    arandr_left_right_nof = os.path.expanduser('~/.config/qtile/scripts/arandr_leftRight_script_offload.sh')
+    subprocess.Popen([arandr_top_bottom])
+    #autostart = os.path.expanduser('~/.config/qtile/scripts/autostart.sh')
+    #subprocess.Popen([autostart])
 
 #qtile.cmd_spawn('setxkbmap -layout br')
 
